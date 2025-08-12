@@ -1,0 +1,11 @@
+{
+  "name": "waitly-sdk",
+  "version": "1.0.0",
+  "description": "Waitly SDK - your waitlist as code",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Antonin Marchard",
+  "license": "MIT"
+}
