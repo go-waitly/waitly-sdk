@@ -1,6 +1,6 @@
 {
   "name": "@go-waitly/waitly-sdk",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Waitly SDK - Your waitlist as code",
   "author": "Antonin Marchard <contact@gowaitly.com>",
   "license": "MIT",

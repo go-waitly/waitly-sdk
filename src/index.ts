@@ -1,6 +1,6 @@
 /**
  * Waitlist SDK - Client JavaScript/TypeScript to manage waitlists
- * @version 1.0.0
+ * @version 1.0.2
  */
 
 export interface WaitlyConfig {
@@ -14,34 +14,18 @@ export interface WaitlyConfig {
 
 export interface WaitlyEntry {
   email: string;
-  name?: string;
-  referralCode?: string;
-  metadata?: Record<string, any>;
-  source?: string;
-  locale?: string;
+  referredByCode?: string;
+  utm?: Record<string, string>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface WaitlyEntryResponse {
-  success: boolean;
-  entryId: string;
-  position: number;
-  referralLink: string;
-  referralCode: string;
-  estimatedWaitTime?: string;
-  createdAt: string;
+  id: string;
+  email: string;
 }
 
 export interface WaitlyStats {
   totalEntries: number;
-  todayEntries: number;
-  weekEntries: number;
-  monthEntries: number;
-  averageWaitTime?: string;
-  conversionRate?: number;
-  topReferrers?: Array<{
-    referralCode: string;
-    count: number;
-  }>;
 }
 
 export interface WaitlyError {
@@ -57,16 +41,16 @@ export class WaitlyClient {
 
   constructor(config: WaitlyConfig) {
     if (!config.waitlistId) {
-      throw new Error("waitlistId is required");
+      throw new Error('waitlistId is required');
     }
     if (!config.apiKey) {
-      throw new Error("apiKey is required");
+      throw new Error('apiKey is required');
     }
 
     this.config = {
       waitlistId: config.waitlistId,
       apiKey: config.apiKey,
-      apiUrl: config.apiUrl || "https://api.waitlist.com",
+      apiUrl: config.apiUrl || 'https://gowaitly.com',
       timeout: config.timeout || 10000,
       retryAttempts: config.retryAttempts || 3,
       headers: config.headers || {},
@@ -80,26 +64,21 @@ export class WaitlyClient {
    */
   async createWaitlyEntry(entry: WaitlyEntry): Promise<WaitlyEntryResponse> {
     if (!entry.email) {
-      throw new Error("Email is required");
+      throw new Error('Email is required');
     }
     if (!this.isValidEmail(entry.email)) {
-      throw new Error("Invalid email format");
+      throw new Error('Invalid email format');
     }
 
     const endpoint = `/api/waitlists/${this.config.waitlistId}/entries`;
 
     try {
-      const response = await this.request<WaitlyEntryResponse>(
-        "POST",
-        endpoint,
-        {
-          email: entry.email.toLowerCase().trim(),
-          name: entry.name?.trim(),
-          referralCode: entry.referralCode,
-          metadata: entry.metadata,
-          source: entry.source || "sdk",
-        }
-      );
+      const response = await this.request<WaitlyEntryResponse>('POST', endpoint, {
+        email: entry.email.toLowerCase().trim(),
+        referredByCode: entry.referredByCode,
+        utm: entry.utm,
+        metadata: entry.metadata,
+      });
 
       return response;
     } catch (error) {
@@ -116,12 +95,9 @@ export class WaitlyClient {
     const endpoint = `/api/waitlists/${this.config.waitlistId}/count`;
 
     try {
-      const response = await this.request<WaitlyStats | { count: number }>(
-        "GET",
-        endpoint
-      );
+      const response = await this.request<WaitlyStats | { count: number }>('GET', endpoint);
 
-      return "totalEntries" in response
+      return 'totalEntries' in response
         ? (response as WaitlyStats).totalEntries
         : (response as { count: number }).count;
     } catch (error) {
@@ -136,17 +112,15 @@ export class WaitlyClient {
    */
   async checkEmailExists(email: string): Promise<boolean> {
     if (!this.isValidEmail(email)) {
-      throw new Error("Invalid email format");
+      throw new Error('Invalid email format');
     }
 
     const endpoint = `/api/waitlists/${this.config.waitlistId}/check`;
 
     try {
-      const response = await this.request<{ exists: boolean }>(
-        "POST",
-        endpoint,
-        { email: email.toLowerCase().trim() }
-      );
+      const response = await this.request<{ exists: boolean }>('POST', endpoint, {
+        email: email.toLowerCase().trim(),
+      });
       return response.exists;
     } catch (error) {
       throw this.handleError(error);
@@ -163,11 +137,7 @@ export class WaitlyClient {
 
   // Méthodes privées
 
-  private async request<T>(
-    method: string,
-    endpoint: string,
-    body?: any
-  ): Promise<T> {
+  private async request<T>(method: string, endpoint: string, body?: any): Promise<T> {
     const url = `${this.config.apiUrl}${endpoint}`;
     const requestId = `${method}-${endpoint}-${Date.now()}`;
 
@@ -183,16 +153,16 @@ export class WaitlyClient {
     const options: RequestInit = {
       method,
       headers: {
-        "Content-Type": "application/json",
-        "X-API-Key": this.config.apiKey,
-        "X-SDK-Version": "1.0.0",
-        "X-Waitlist-ID": this.config.waitlistId,
+        'Content-Type': 'application/json',
+        'X-API-Key': this.config.apiKey,
+        'X-SDK-Version': '1.0.0',
+        'X-Waitlist-ID': this.config.waitlistId,
         ...this.config.headers,
       },
       signal: abortController.signal,
     };
 
-    if (body && method !== "GET") {
+    if (body && method !== 'GET') {
       options.body = JSON.stringify(body);
     }
 
@@ -231,8 +201,8 @@ export class WaitlyClient {
         clearTimeout(timeoutId);
         this.abortControllers.delete(requestId);
 
-        if (error.name === "AbortError") {
-          throw new Error("Request timeout");
+        if (error.name === 'AbortError') {
+          throw new Error('Request timeout');
         }
 
         lastError = error;
@@ -251,8 +221,8 @@ export class WaitlyClient {
   private handleError(error: any): WaitlyError {
     if (error.statusCode === 400) {
       return {
-        code: "VALIDATION_ERROR",
-        message: error.message || "Invalid request data",
+        code: 'VALIDATION_ERROR',
+        message: error.message || 'Invalid request data',
         details: error.details,
         statusCode: 400,
       };
@@ -260,47 +230,47 @@ export class WaitlyClient {
 
     if (error.statusCode === 401) {
       return {
-        code: "UNAUTHORIZED",
-        message: "Invalid API key",
+        code: 'UNAUTHORIZED',
+        message: 'Invalid API key',
         statusCode: 401,
       };
     }
 
     if (error.statusCode === 404) {
       return {
-        code: "NOT_FOUND",
-        message: "Waitlist not found",
+        code: 'NOT_FOUND',
+        message: 'Waitlist not found',
         statusCode: 404,
       };
     }
 
     if (error.statusCode === 409) {
       return {
-        code: "DUPLICATE_ENTRY",
-        message: error.message || "Email already registered",
+        code: 'DUPLICATE_ENTRY',
+        message: error.message || 'Email already registered',
         statusCode: 409,
       };
     }
 
     if (error.statusCode === 429) {
       return {
-        code: "RATE_LIMIT",
-        message: "Too many requests",
+        code: 'RATE_LIMIT',
+        message: 'Too many requests',
         statusCode: 429,
       };
     }
 
-    if (error.message === "Request timeout") {
+    if (error.message === 'Request timeout') {
       return {
-        code: "TIMEOUT",
-        message: "Request timeout",
+        code: 'TIMEOUT',
+        message: 'Request timeout',
         statusCode: 0,
       };
     }
 
     return {
-      code: "UNKNOWN_ERROR",
-      message: error.message || "An unexpected error occurred",
+      code: 'UNKNOWN_ERROR',
+      message: error.message || 'An unexpected error occurred',
       details: error,
       statusCode: error.statusCode || 0,
     };
