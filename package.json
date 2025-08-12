@@ -1,11 +1,89 @@
 {
-  "name": "waitly-sdk",
+  "name": "@go-waitly/waitly-sdk",
   "version": "1.0.0",
-  "description": "Waitly SDK - your waitlist as code",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "description": "Waitly SDK - Your waitlist as code",
+  "author": "Antonin Marchard <contact@gowaitly.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/go-waitly/waitly-sdk",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/go-waitly/waitly-sdk.git"
   },
-  "author": "Antonin Marchard",
-  "license": "MIT"
+  "bugs": {
+    "url": "https://github.com/go-waitly/waitly-sdk/issues"
+  },
+  "keywords": [
+    "waitlist",
+    "sdk",
+    "api",
+    "typescript",
+    "javascript",
+    "email",
+    "saas"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "build:min": "tsup --minify",
+    "test": "vitest",
+    "test:watch": "vitest watch",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx,json,md}\"",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build:min",
+    "release": "npm run test && npm run build:min && changeset publish",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.1",
+    "@size-limit/preset-small-lib": "^11.0.1",
+    "@types/node": "20.19.10",
+    "@typescript-eslint/eslint-plugin": "^6.18.1",
+    "@typescript-eslint/parser": "^6.18.1",
+    "@vitest/coverage-v8": "^1.2.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "msw": "^2.0.11",
+    "prettier": "^3.2.2",
+    "size-limit": "^11.0.1",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.11",
+    "vitest": "^1.2.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "size-limit": [
+    {
+      "path": "dist/index.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/index.mjs",
+      "limit": "10 KB"
+    }
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }

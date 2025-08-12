@@ -1,0 +1,28 @@
+# Source
+src/
+tsconfig.json
+tsup.config.ts
+vitest.config.ts
+.eslintrc.json
+.prettierrc
+
+# Tests
+**/*.test.ts
+**/*.spec.ts
+coverage/
+.github/
+
+# Development
+.changeset/
+.vscode/
+.idea/
+
+# Misc
+*.log
+.DS_Store
+.env*
+
+# Keep only dist and docs
+!dist/
+!README.md
+!LICENSE
