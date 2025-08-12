@@ -1,0 +1,11 @@
+dist/
+node_modules/
+.env
+.DS_Store
+.idea/
+.vscode/
+.changeset/
+.eslintrc.json
+.prettierrc
+.prettierignore
+.prettierignore
