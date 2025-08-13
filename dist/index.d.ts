@@ -1,6 +1,6 @@
 /**
  * Waitlist SDK - Client JavaScript/TypeScript to manage waitlists
- * @version 1.0.0
+ * @version 1.0.2
  */
 interface WaitlyConfig {
     waitlistId: string;
@@ -12,32 +12,16 @@ interface WaitlyConfig {
 }
 interface WaitlyEntry {
     email: string;
-    name?: string;
-    referralCode?: string;
-    metadata?: Record<string, any>;
-    source?: string;
-    locale?: string;
+    referredByCode?: string;
+    utm?: Record<string, string>;
+    metadata?: Record<string, unknown>;
 }
 interface WaitlyEntryResponse {
-    success: boolean;
-    entryId: string;
-    position: number;
-    referralLink: string;
-    referralCode: string;
-    estimatedWaitTime?: string;
-    createdAt: string;
+    id: string;
+    email: string;
 }
 interface WaitlyStats {
     totalEntries: number;
-    todayEntries: number;
-    weekEntries: number;
-    monthEntries: number;
-    averageWaitTime?: string;
-    conversionRate?: number;
-    topReferrers?: Array<{
-        referralCode: string;
-        count: number;
-    }>;
 }
 interface WaitlyError {
     code: string;

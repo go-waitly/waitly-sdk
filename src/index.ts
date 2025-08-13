@@ -289,5 +289,3 @@ export class WaitlyClient {
 export function createWaitlyClient(config: WaitlyConfig): WaitlyClient {
   return new WaitlyClient(config);
 }
-
-export default { createWaitlyClient, WaitlyClient };

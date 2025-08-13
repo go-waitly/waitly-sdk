@@ -11,8 +11,4 @@ export default defineConfig({
   treeshake: true,
   external: [],
   noExternal: [],
-  globalName: 'WaitlistSDK',
-  footer: {
-    js: `if (typeof window !== 'undefined' && !window.WaitlistSDK) { window.WaitlistSDK = WaitlistSDK; }`,
-  },
 });
