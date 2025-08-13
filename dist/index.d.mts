@@ -61,9 +61,5 @@ declare class WaitlyClient {
     private delay;
 }
 declare function createWaitlyClient(config: WaitlyConfig): WaitlyClient;
-declare const _default: {
-    createWaitlyClient: typeof createWaitlyClient;
-    WaitlyClient: typeof WaitlyClient;
-};
 
-export { WaitlyClient, type WaitlyConfig, type WaitlyEntry, type WaitlyEntryResponse, type WaitlyError, type WaitlyStats, createWaitlyClient, _default as default };
+export { WaitlyClient, type WaitlyConfig, type WaitlyEntry, type WaitlyEntryResponse, type WaitlyError, type WaitlyStats, createWaitlyClient };

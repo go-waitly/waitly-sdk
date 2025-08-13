@@ -50,7 +50,7 @@ export class WaitlyClient {
     this.config = {
       waitlistId: config.waitlistId,
       apiKey: config.apiKey,
-      apiUrl: config.apiUrl || 'https://gowaitly.com',
+      apiUrl: config.apiUrl || 'https://www.gowaitly.com',
       timeout: config.timeout || 10000,
       retryAttempts: config.retryAttempts || 3,
       headers: config.headers || {},
